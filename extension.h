@@ -22,9 +22,14 @@
 #ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
-
+#include <nlohmann/json.hpp>
+#include <fstream>
 #include "impl/IJsonus.h"
 #include "smsdk_ext.h"
+
+using json = nlohmann::json;
+using string_t = std::string;
+using value_t = nlohmann::detail::value_t;
 
 using namespace SourceMod;
 
@@ -34,31 +39,33 @@ class Jsonus : public IJsonus
 		Jsonus();
 		Jsonus(IJsonus *p);
 		Jsonus(const char *input);
+		Jsonus(std::ifstream *i);
 		~Jsonus();
 
     public:
-        string_t print(int tabs);
-        IJsonus *create();
-
+		void removeKey(const char *key);
 		bool hasKey(const char *key);
+        const char *print(int tabs);
+        IJsonus *create();
+		cell_t size();
 
         public:
-        const char *GetInt64(const char *key);
         const char *GetString(const char *key);
         float GetFloat(const char *key);
+        long GetInt64(const char *key);
         IJsonus *Get(const char *key);
         bool GetBool(const char *key);
         int GetInt(const char *key);
-        value_t GetType();
+        cell_t GetType();
 
 		public:
-		void Clear();
+		void clear();
 		bool IsNull(const char *key);
-		void RemoveKey(const char *key);
 
         
         bool SetString(const char *key, const char *value);
 		bool SetFloat(const char *key, const float value);
+		bool SetInt64(const char *key, const long value);
         bool SetBool(const char *key, const bool value);
         bool SetInt(const char *key, const int value);
         bool Set(const char *key, IJsonus *value);
@@ -66,12 +73,12 @@ class Jsonus : public IJsonus
 	public:
 		unsigned int GetInterfaceVersion() 
 		{
-			return SMINTERFACE_MYINTERFACE_VERSION;
+			return SMINTERFACE_JSONUS_VERSION;
 		}
 
 		const char *GetInterfaceName() 
 		{
-			return SMINTERFACE_MYINTERFACE_NAME;
+			return SMINTERFACE_JSONUS_NAME;
 		}
 
 		bool IsVersionCompatible(unsigned int version)
@@ -86,7 +93,7 @@ class Jsonus : public IJsonus
 
 
     private:
-        json *json_p;
+        json *m_pJson;
 };
 
 /**

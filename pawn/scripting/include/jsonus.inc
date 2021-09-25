@@ -31,9 +31,13 @@ methodmap JSON < Handle
 	//
 	// @param buffer     String buffer to write to.
 	// @param maxlength  Maximum length of the string buffer.
-	// @param flags      Encoding flags.
+	// @param spaces     Space count
 	// @return           True on success, false on failure.
-	public native bool ToString(char[] buffer, int maxlength, int tabs = -1);
+	public native bool ToString(char[] buffer, int maxlength, int spaces = -1);
+
+	public native JSON FromFile(const char[] path);
+	public native bool ToFile(const char[] path, int spaces = -1);
+	
 
 	// Creates a JSON pointer with NULL(JSONTypes) type
 	//
@@ -119,6 +123,15 @@ methodmap JSON < Handle
 	// @return           True on success, false on failure.
 	public native bool SetInt(const char[] key, int value);
 
+	// Sets an integer64 value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
+	//
+	// @param key        Key string.
+	// @param value      Value to store at this key.
+	// @return           True on success, false on failure.
+	public native bool SetInt64(const char[] key, const char[] value);
+
+	public native bool SetNull(const char[] key);
+
 	// Sets a string value in the object, either inserting a new entry or replacing an old one.
 	//
 	// @param key        Key string.
@@ -135,12 +148,19 @@ methodmap JSON < Handle
 	// Clears the object of all entries.
 	// @return           True on success, false on failure.
 	public native bool Clear();
+
+	public native JSONTypes GetType();
+
+	// Retrieves the size of the object.
+	property int Size {
+		public native get();
+	}
 };
 
 /**
  * Do not edit below this line!
  */
-public Extension __ext_jansson =
+public Extension __ext_jsonus =
 {
 	name = "JSON in Pawn",
 	file = "jsonus.ext",

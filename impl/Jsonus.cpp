@@ -2,17 +2,22 @@
 
 Jsonus::Jsonus()
 {
-    json_p = new json();
+    m_pJson = new json();
 }
 
 Jsonus::Jsonus(const char *input)
 {
-    json_p = new json(json::parse(input));
+    m_pJson = new json(json::parse(input));
 }
 
 Jsonus::Jsonus(IJsonus *p)
 {
-    json_p = new json(json::parse(p->print(-1)));
+    m_pJson = new json(json::parse(p->print(-1)));
+}
+
+Jsonus::Jsonus(std::ifstream *i)
+{
+	m_pJson = new json(json::parse(*i));
 }
 
 IJsonus *Jsonus::create()
@@ -22,82 +27,91 @@ IJsonus *Jsonus::create()
 
 Jsonus::~Jsonus()
 {
-    delete json_p;
+    delete m_pJson;
+}
+
+void Jsonus::removeKey(const char *key)
+{
+	if (hasKey(key))
+		m_pJson->erase(key);
 }
 
 bool Jsonus::hasKey(const char *key)
 {
-    return json_p->contains(key);
+    return m_pJson->contains(key);
 }
 
-string_t Jsonus::print(int tabs)
+const char *Jsonus::print(int tabs)
 {
-    return json_p->dump(tabs);
+    return m_pJson->dump(tabs).c_str();
 }
 
 const char *Jsonus::GetString(const char *key) 
 {
-    return json_p->at(key).get<string_t>().c_str();
+    return m_pJson->at(key).get<string_t>().c_str();
 }
 
-value_t Jsonus::GetType()
+cell_t Jsonus::GetType()
 {
-    return json_p->type();
+    return (cell_t) m_pJson->type();
 }
 
 float Jsonus::GetFloat(const char *key)
 {
-    return json_p->at(key).get<float>();
+    return m_pJson->at(key).get<float>();
 }
 
 int Jsonus::GetInt(const char *key)
 {
-    return json_p->at(key).get<int>();
+    return m_pJson->at(key).get<int>();
 }
 
 bool Jsonus::GetBool(const char *key)
 {
-    return json_p->at(key).get<bool>();
+    return m_pJson->at(key).get<bool>();
 }
 
-const char *Jsonus::GetInt64(const char *key)
+long Jsonus::GetInt64(const char *key)
 {
-    const char *buffer = "hello world!";
-
-    // sprintf(buffer, "%ld", json_p->at(key).get<long>());
-
-    return buffer;
+    return m_pJson->at(key).get<long>();
 }
 
 IJsonus *Jsonus::Get(const char *key)
 {
-    return (IJsonus *) new Jsonus(json_p->at(key).get<json>().dump().c_str());
+    return (IJsonus *) new Jsonus(m_pJson->at(key).get<json>().dump().c_str());
 }
 
 bool Jsonus::SetString(const char *key, const char *value)
 {
-    json_p->at(key) = value;
+    m_pJson->at(key) = value;
 
     return strcmp(GetString(key), value) == 0; 
 }
 
 bool Jsonus::SetInt(const char *key, const int value)
 {
-    json_p->at(key) = value;
+    m_pJson->at(key) = value;
 
     return GetInt(key) == value;
 }
 
 bool Jsonus::IsNull(const char *key)
 {
-    return json_p->at(key).is_null();
+    return m_pJson->at(key).is_null();
 }
 
 bool Jsonus::SetBool(const char *key, const bool value)
 {
-    json_p->at(key) = value;
+    m_pJson->at(key) = value;
 
     return GetBool(key) == value;
+}
+
+bool Jsonus::SetInt64(const char *key, const long value)
+{
+	m_pJson->at(key) = value;
+
+	return GetInt64(key) == value;
 }
 
 // bool Jsonus::SetNull(const char *key)
@@ -107,26 +121,25 @@ bool Jsonus::SetBool(const char *key, const bool value)
 
 bool Jsonus::Set(const char *key, IJsonus *value)
 {
-    json_p->emplace(key, json::parse(value->print(-1)));
+    m_pJson->emplace(key, json::parse(value->print(-1)));
 
-    return strcmp(print(-1).c_str(), value->print(-1).c_str()) == 0;
+    return strcmp(print(-1), value->print(-1)) == 0;
 }
 
 bool Jsonus::SetFloat(const char *key, const float value)
 {
-	json_p->at(key) = value;
+	m_pJson->at(key) = value;
 
-	return json_p->at(key).type() == value_t::number_float;
+	return m_pJson->at(key).type() == value_t::number_float;
 }
 
-void Jsonus::RemoveKey(const char *key)
+cell_t Jsonus::size()
 {
-    if(hasKey(key))
-        json_p->erase(key);
+	return (cell_t) m_pJson->size();
 }
 
-void Jsonus::Clear()
+void Jsonus::clear()
 {
-    json_p->clear();
+    m_pJson->clear();
 }
 
