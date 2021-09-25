@@ -22,33 +22,78 @@
 #ifndef _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
-#include <jansson.h>
+
+#include "impl/IJsonus.h"
 #include "smsdk_ext.h"
 
-struct JSONObjectKeys {
-	JSONObjectKeys(json_t *object) : object(object), iter(json_object_iter(object)) {}
+using namespace SourceMod;
 
-	const char *GetKey()
-	{
-		return json_object_iter_key(iter);
-	}
+class Jsonus : public IJsonus
+{
+    public:
+		Jsonus();
+		Jsonus(IJsonus *p);
+		Jsonus(const char *input);
+		~Jsonus();
 
-	void Next()
-	{
-		iter = json_object_iter_next(object, iter);
-	}
+    public:
+        string_t print(int tabs);
+        IJsonus *create();
 
-private:
-	json_t *object;
-	void *iter;
+		bool hasKey(const char *key);
+
+        public:
+        const char *GetInt64(const char *key);
+        const char *GetString(const char *key);
+        float GetFloat(const char *key);
+        IJsonus *Get(const char *key);
+        bool GetBool(const char *key);
+        int GetInt(const char *key);
+        value_t GetType();
+
+		public:
+		void Clear();
+		bool IsNull(const char *key);
+		void RemoveKey(const char *key);
+
+        
+        bool SetString(const char *key, const char *value);
+		bool SetFloat(const char *key, const float value);
+        bool SetBool(const char *key, const bool value);
+        bool SetInt(const char *key, const int value);
+        bool Set(const char *key, IJsonus *value);
+
+	public:
+		unsigned int GetInterfaceVersion() 
+		{
+			return SMINTERFACE_MYINTERFACE_VERSION;
+		}
+
+		const char *GetInterfaceName() 
+		{
+			return SMINTERFACE_MYINTERFACE_NAME;
+		}
+
+		bool IsVersionCompatible(unsigned int version)
+		{
+			if (version > GetInterfaceVersion())
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+
+    private:
+        json *json_p;
 };
-
 
 /**
  * @brief Implementation of the REST in Pawn Extension.
  * Note: Uncomment one of the pre-defined virtual functions in order to use it.
  */
-class Jansson : public SDKExtension
+class JSON : public SDKExtension
 {
 public:
 	/**
@@ -127,19 +172,11 @@ public:
 	void OnHandleDestroy(HandleType_t type, void *object);
 };
 
-class JSONObjectKeysHandler : public IHandleTypeDispatch
-{
-public:
-	void OnHandleDestroy(HandleType_t type, void *object);
-};
-
-extern Jansson g_Jansson;
+extern JSON g_JSON;
+extern IJsonus *g_Jsonus;
 
 extern JSONHandler	g_JSONHandler;
 extern HandleType_t		htJSON;
-
-extern JSONObjectKeysHandler	g_JSONObjectKeysHandler;
-extern HandleType_t				htJSONObjectKeys;
 
 extern const sp_nativeinfo_t json_natives[];
 

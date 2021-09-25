@@ -21,20 +21,19 @@
 
 #include "extension.h"
 
-Jansson g_Jansson;		/**< Global singleton for extension's main interface */
+JSON 				g_JSON;		/**< Global singleton for extension's main interface */
+IJsonus				*g_Jsonus;
 
-SMEXT_LINK(&g_Jansson);
+SMEXT_LINK(&g_JSON);
 
-JSONHandler		g_JSONHandler;
+JSONHandler			g_JSONHandler;
 HandleType_t		htJSON;
 
-JSONObjectKeysHandler	g_JSONObjectKeysHandler;
-HandleType_t			htJSONObjectKeys;
-
-bool Jansson::SDK_OnLoad(char *error, size_t maxlength, bool late)
+bool JSON::SDK_OnLoad(char *error, size_t maxlength, bool late)
 {
+	sharesys->AddInterface(myself, g_Jsonus);
 	sharesys->AddNatives(myself, json_natives);
-	sharesys->RegisterLibrary(myself, "jansson");
+	sharesys->RegisterLibrary(myself, "jsonus");
 
 	/* Set up access rights for the 'JSON' handle type */
 	HandleAccess haJSON;
@@ -43,23 +42,16 @@ bool Jansson::SDK_OnLoad(char *error, size_t maxlength, bool late)
 	haJSON.access[HandleAccess_Read] = 0;
 
 	htJSON = handlesys->CreateType("JSON", &g_JSONHandler, 0, NULL, &haJSON, myself->GetIdentity(), NULL);
-	htJSONObjectKeys = handlesys->CreateType("JSONObjectKeys", &g_JSONObjectKeysHandler, 0, NULL, NULL, myself->GetIdentity(), NULL);
-
+	
 	return true;
 }
 
-void Jansson::SDK_OnUnload()
+void JSON::SDK_OnUnload()
 {
 	handlesys->RemoveType(htJSON, myself->GetIdentity());
-	handlesys->RemoveType(htJSONObjectKeys, myself->GetIdentity());
 }
 
 void JSONHandler::OnHandleDestroy(HandleType_t type, void *object)
 {
-	json_decref((json_t *)object);
-}
-
-void JSONObjectKeysHandler::OnHandleDestroy(HandleType_t type, void *object)
-{
-	delete (struct JSONObjectKeys *)object;
+	delete (IJsonus *)object;
 }

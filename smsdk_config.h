@@ -28,11 +28,11 @@
  */
 
 /* Basic information exposed publicly */
-#define SMEXT_CONF_NAME			"Jansson Ext"
+#define SMEXT_CONF_NAME			"Json"
 #define SMEXT_CONF_DESCRIPTION	"Provides JSON natives for plugins"
 #define SMEXT_CONF_VERSION		"1.0.0"
-#define SMEXT_CONF_AUTHOR		"Tsunami"
-#define SMEXT_CONF_URL			"http://www.tsunami-productions.nl"
+#define SMEXT_CONF_AUTHOR		"rej.chev?"
+#define SMEXT_CONF_URL			"..."
 #define SMEXT_CONF_LOGTAG		"JSON"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
@@ -49,7 +49,7 @@
 //#define SMEXT_CONF_METAMOD
 
 /** Enable interfaces you want to use here by uncommenting lines */
-#define SMEXT_ENABLE_FORWARDSYS
+// #define SMEXT_ENABLE_FORWARDSYS
 #define SMEXT_ENABLE_HANDLESYS
 //#define SMEXT_ENABLE_PLAYERHELPERS
 //#define SMEXT_ENABLE_DBMANAGER
@@ -58,7 +58,7 @@
 //#define SMEXT_ENABLE_GAMEHELPERS
 //#define SMEXT_ENABLE_TIMERSYS
 //#define SMEXT_ENABLE_THREADER
-//#define SMEXT_ENABLE_LIBSYS
+#define SMEXT_ENABLE_LIBSYS
 //#define SMEXT_ENABLE_MENUS
 //#define SMEXT_ENABLE_ADTFACTORY
 //#define SMEXT_ENABLE_PLUGINSYS

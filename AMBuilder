@@ -1,10 +1,10 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os
 
-libjansson = builder.Build('jansson/src/AMBuilder')
+libjansson = builder.Build('json/AMBuilder')
 
 for cxx in builder.targets:
-  binary = Extension.Library(builder, cxx, 'jansson.ext')
+  binary = Extension.Library(builder, cxx, 'json.ext')
   arch = binary.compiler.target.arch
 
   binary.sources += [
@@ -14,7 +14,7 @@ for cxx in builder.targets:
   ]
 
   binary.compiler.includes += [
-    os.path.join(builder.sourcePath, 'jansson', 'include'),
+    os.path.join(builder.sourcePath, 'json', 'include'),
   ]
 
   if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
