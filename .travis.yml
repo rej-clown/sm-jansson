@@ -31,6 +31,6 @@ before_script:
   - mkdir $TRAVIS_BUILD_DIR/build && cd $TRAVIS_BUILD_DIR/build
 
 script:
-  - python ../configure.py --enable-optimize --targets=$TARGET_ARCH
+  - python ../configure.py --enable-optimize
   - ambuild
  
