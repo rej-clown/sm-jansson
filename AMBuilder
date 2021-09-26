@@ -1,19 +1,19 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os
 
-libjansson = builder.Build('json/AMBuilder')
-
 for cxx in builder.targets:
-  binary = Extension.Library(builder, cxx, 'json.ext')
+  binary = Extension.Library(builder, cxx, 'jsonus.ext')
   arch = binary.compiler.target.arch
 
   binary.sources += [
     'extension.cpp',
     'json_natives.cpp',
     os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp'),
+    os.path.join(builder.sourcePath, 'impl', 'Jsonus.cpp'),
   ]
 
   binary.compiler.includes += [
+    os.path.join(builder.sourcePath, 'json', 'single_include'),
     os.path.join(builder.sourcePath, 'json', 'include'),
   ]
 
