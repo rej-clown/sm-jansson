@@ -290,6 +290,10 @@ class ExtensionConfig(object):
       os.path.join(self.sm_root, 'sourcepawn', 'include'),
       os.path.join(self.sm_root, 'public', 'amtl', 'amtl'),
       os.path.join(self.sm_root, 'public', 'amtl'),
+      os.path.join(builder.sourcePath, 'json', 'single_include'),
+      os.path.join(builder.sourcePath, 'json', 'single_include', 'nlohmann'),
+      os.path.join(builder.sourcePath, 'json', 'include'),
+      os.path.join(builder.sourcePath, 'json', 'include', 'nlohmann'),
     ]
     return compiler
 
