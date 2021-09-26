@@ -7,8 +7,7 @@ projectName = 'jsonus'
 sourceFiles = [
   'extension.cpp',
   'json_natives.cpp',
-  os.path.join(builder.sourcePath, 'impl', 'Jsonus.cpp'),
-  os.path.join(builder.sourcePath, 'json/include/nlohmann', 'json.cpp'),
+  'Jsonus.cpp',
 ]
 
 ###############
