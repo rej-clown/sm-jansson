@@ -23,12 +23,13 @@
 #define _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
 
 #include <nlohmann/json.hpp>
-#include <fstream>
 #include "impl/IJsonus.h"
 #include "smsdk_ext.h"
+#include <fstream>
+#include <cstring>
 
 using json = nlohmann::json;
-using string_t = std::string;
+using string_t = nlohmann::json::string_t;
 using value_t = nlohmann::detail::value_t;
 
 using namespace SourceMod;
@@ -45,30 +46,24 @@ class Jsonus : public IJsonus
     public:
 		void removeKey(const char *key);
 		bool hasKey(const char *key);
-        const char *print(int tabs);
+        char *print(int tabs);
         IJsonus *create();
 		cell_t size();
 
         public:
-        const char *GetString(const char *key);
+		bool Write(const char *key, const char *value);
+        char *GetString(const char *key);
         float GetFloat(const char *key);
         long GetInt64(const char *key);
         IJsonus *Get(const char *key);
         bool GetBool(const char *key);
+		bool IsNull(const char *key);
         int GetInt(const char *key);
         cell_t GetType();
-
-		public:
 		void clear();
-		bool IsNull(const char *key);
 
-        
-        bool SetString(const char *key, const char *value);
-		bool SetFloat(const char *key, const float value);
-		bool SetInt64(const char *key, const long value);
-        bool SetBool(const char *key, const bool value);
-        bool SetInt(const char *key, const int value);
-        bool Set(const char *key, IJsonus *value);
+	private:
+		void update(json obj);
 
 	public:
 		unsigned int GetInterfaceVersion() 

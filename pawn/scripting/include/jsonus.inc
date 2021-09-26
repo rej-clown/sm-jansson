@@ -20,14 +20,15 @@ enum JSONTypes
 // Generic type for encoding JSON.
 methodmap JSON < Handle
 {
-	// JSON string representation
+	// Parses a JSON string and returns a JSON pointer
 	//
 	// @param json_line   JSON lexicographical string
-	// @return           JSON pointer
-	// @error			Invalid JSON line format
-	public native JSON FromString(const char[] json_line);
+	// @return            JSON pointer
+	// @error			  Invalid JSON line format
+	// The JSON must be freed via delete or CloseHandle().
+	public static native JSON FromString(const char[] json_line);
 
-	// Retrieves the JSON string representation.
+	// String representation of the current JSON structure
 	//
 	// @param buffer     String buffer to write to.
 	// @param maxlength  Maximum length of the string buffer.
@@ -35,7 +36,18 @@ methodmap JSON < Handle
 	// @return           True on success, false on failure.
 	public native bool ToString(char[] buffer, int maxlength, int spaces = -1);
 
-	public native JSON FromFile(const char[] path);
+	// Reading JSON structure from file
+	//
+	// @param path     	 File path
+	// @return           JSON pointer
+	// @error		     Con't open file
+	public static native JSON FromFile(const char[] path);
+
+	// Writing the current JSON structure to the file
+	//
+	// @param path     	 File path
+	// @param spaces     Spaces count
+	// @return           True on success, false on failure.
 	public native bool ToFile(const char[] path, int spaces = -1);
 	
 
@@ -95,49 +107,13 @@ methodmap JSON < Handle
 	// @return           True if the key exists, false otherwise.
 	public native bool HasKey(const char[] key);
 
-	// Sets an array or object value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
+	// Writing and overwriting a value
 	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool Set(const char[] key, JSON value);
-
-	// Sets a boolean value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
-	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool SetBool(const char[] key, bool value);
-
-	// Sets a float value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
-	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool SetFloat(const char[] key, float value);
-
-	// Sets an integer value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
-	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool SetInt(const char[] key, int value);
-
-	// Sets an integer64 value in the object (JSONT_OBJECT), either inserting a new entry or replacing an old one.
-	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool SetInt64(const char[] key, const char[] value);
-
-	public native bool SetNull(const char[] key);
-
-	// Sets a string value in the object, either inserting a new entry or replacing an old one.
-	//
-	// @param key        Key string.
-	// @param value      Value to store at this key.
-	// @return           True on success, false on failure.
-	public native bool SetString(const char[] key, const char[] value);
+	// @param key       Key string.
+	// @param value     JSON string
+	// @return          True if success, false otherwise
+	// @error			Invalid JSON string format 
+	public native bool Write(const char[] key, const char[] value);
 
 	// Removes an entry from the object.
 	//
@@ -149,6 +125,7 @@ methodmap JSON < Handle
 	// @return           True on success, false on failure.
 	public native bool Clear();
 
+	// Retrieves the type of the object.
 	public native JSONTypes GetType();
 
 	// Retrieves the size of the object.

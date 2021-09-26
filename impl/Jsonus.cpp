@@ -41,14 +41,24 @@ bool Jsonus::hasKey(const char *key)
     return m_pJson->contains(key);
 }
 
-const char *Jsonus::print(int tabs)
+char *Jsonus::print(int tabs)
 {
-    return m_pJson->dump(tabs).c_str();
+	std::string x; x.assign(m_pJson->dump(tabs));
+
+	char *cptr = new char[x.length() + 1];
+	std::strcpy(cptr, x.c_str());
+
+    return cptr;
 }
 
-const char *Jsonus::GetString(const char *key) 
+char *Jsonus::GetString(const char *key) 
 {
-    return m_pJson->at(key).get<string_t>().c_str();
+	std::string x; x.assign(m_pJson->at(key).get<string_t>());
+
+	char *cptr = new char[x.length() + 1];
+	std::strcpy(cptr, x.c_str());
+
+	return cptr;
 }
 
 cell_t Jsonus::GetType()
@@ -78,21 +88,7 @@ long Jsonus::GetInt64(const char *key)
 
 IJsonus *Jsonus::Get(const char *key)
 {
-    return (IJsonus *) new Jsonus(m_pJson->at(key).get<json>().dump().c_str());
-}
-
-bool Jsonus::SetString(const char *key, const char *value)
-{
-    m_pJson->at(key) = value;
-
-    return strcmp(GetString(key), value) == 0; 
-}
-
-bool Jsonus::SetInt(const char *key, const int value)
-{
-    m_pJson->at(key) = value;
-
-    return GetInt(key) == value;
+    return (IJsonus *) new Jsonus(const_cast<char *>(m_pJson->at(key).get<json>().dump().c_str()));
 }
 
 bool Jsonus::IsNull(const char *key)
@@ -100,37 +96,19 @@ bool Jsonus::IsNull(const char *key)
     return m_pJson->at(key).is_null();
 }
 
-bool Jsonus::SetBool(const char *key, const bool value)
+void Jsonus::update(json val)
 {
-    m_pJson->at(key) = value;
-
-    return GetBool(key) == value;
+	m_pJson->update(val);
 }
 
-bool Jsonus::SetInt64(const char *key, const long value)
+bool Jsonus::Write(const char *key, const char *value)
 {
-	m_pJson->at(key) = value;
+	json obj;
+	obj[key] = json::parse(value);
 
-	return GetInt64(key) == value;
-}
+	update(obj);
 
-// bool Jsonus::SetNull(const char *key)
-// {
-
-// }
-
-bool Jsonus::Set(const char *key, IJsonus *value)
-{
-    m_pJson->emplace(key, json::parse(value->print(-1)));
-
-    return strcmp(print(-1), value->print(-1)) == 0;
-}
-
-bool Jsonus::SetFloat(const char *key, const float value)
-{
-	m_pJson->at(key) = value;
-
-	return m_pJson->at(key).type() == value_t::number_float;
+	return hasKey(key);
 }
 
 cell_t Jsonus::size()
