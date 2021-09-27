@@ -20,9 +20,16 @@ Jsonus::Jsonus(std::ifstream *i)
 	m_pJson = new json(json::parse(*i));
 }
 
-IJsonus *Jsonus::create()
+void Jsonus::load(const char *line)
 {
-    return (IJsonus *) new Jsonus();
+	m_pJson->clear();
+
+	update(json::parse(line));
+}
+
+IJsonus *Jsonus::create(const char *input)
+{
+	return (IJsonus *) new Jsonus(input);
 }
 
 Jsonus::~Jsonus()

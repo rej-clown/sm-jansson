@@ -47,7 +47,8 @@ class Jsonus : public IJsonus
 		void removeKey(const char *key);
 		bool hasKey(const char *key);
         char *print(int tabs);
-        IJsonus *create();
+        void load(const char *input);
+		IJsonus *create(const char *input);
 		cell_t size();
 
         public:
